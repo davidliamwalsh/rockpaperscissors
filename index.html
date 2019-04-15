@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Rock, Paper, Scissors</title>
+  </head>
+
+  <body>
+
+    <div class="c-container">
+
+      <div data-behavior="gameControls" class="c-controls">
+        <button data-behavior="rock" class="c-button_rock"></button>
+        <button data-behavior="paper" class="c-button_paper"></button>
+        <button data-behavior="scissors" class="c-button_scissors"></button>
+      </div>
+
+      <div class="c-messages">
+        <p data-behavior="beginMsg">Click a choice to begin rock, paper, scissors</p>
+        <p data-behavior="finalScore"></p>
+      </div>
+      
+      <button data-behavior="resetGame" class="c-button_reset"></button>
+    
+    </div>
+
+    <script>
+      let playerScore = parseInt(0);
+      let computerScore = parseInt(0);
+      const buttons = document.querySelector("div[data-behavior='gameControls']")
+      const resetGame = document.querySelector("button[data-behavior='resetGame']")
+      const beginMsg = document.querySelector("p[data-behavior='beginMsg']")
+      let gameCount = 0;
+      function computerPlay() {
+        const rand = Math.random();   
+        if (rand < 0.34) {
+          return 'rock';
+        } else if (rand <= 0.67) {
+          return 'paper';
+        } else {
+          return 'scissors';
+        }
+      }
+      function playRound(playerSelection, computerSelection) {
+        gameCount++
+      
+        if ((playerSelection === 'rock' && computerSelection === 'scissors') || (playerSelection === 'scissors' && computerSelection === 'paper') || (playerSelection === 'paper' && computerSelection === 'rock')) { 
+          beginMsg.innerHTML = `You win this round, ${playerSelection} over computer ${computerSelection}. Try again`;
+          playerScore++;
+        } else if ((computerSelection === 'rock' && playerSelection === 'scissors') || (computerSelection === 'scissors' && playerSelection === 'paper') || (computerSelection === 'paper' && playerSelection === 'rock')) {
+          beginMsg.innerHTML = `You lost this round, ${computerSelection} over player ${playerSelection}. Try again`; 
+          computerScore++;
+        } else {
+          beginMsg.innerHTML = `This round was a draw, player ${playerSelection} computer ${computerSelection}. Try again`;
+        }  
+        determineWinner()
+      } 
+      function game(e) {
+        const playerSelection = e.target.dataset.behavior.toString();
+        const computerSelection = computerPlay();
+        playRound(playerSelection, computerSelection);
+      }
+      function determineWinner() {
+        if (gameCount === 5) {
+          const finalScore = document.querySelector("p[data-behavior='finalScore']");
+          finalScore.innerHTML = `Player score = ${playerScore} <br> Computer score = ${computerScore}`;
+          buttons.style.display = 'none';
+          beginMsg.style.display = 'none';
+    
+          resetGame.style.display = 'block';
+          
+        }
+      }
+      function reset() {
+        location.reload();
+      }
+      buttons.addEventListener('click', game)
+      resetGame.addEventListener('click', reset)
+    </script>
+  </body>
+</html>
